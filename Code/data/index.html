@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigga Weather Station</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Bigga Weather Station</h1>
+            <div class="realtime-clock" id="realtimeClock">--:--:--</div>
+            <div class="notification-wrapper">
+                <button id="notificationBtn" class="btn-notification" title="Thông báo">🔔</button>
+                <div class="notification-dropdown" id="notificationDropdown">
+                    <div class="notification-header">
+                        <h4>🔔 Thông báo</h4>
+                        <button class="btn-clear-notif" id="clearNotifBtn">Xóa tất cả</button>
+                    </div>
+                    <div class="notification-list" id="notificationList">
+                        <div class="notification-empty">
+                            <div class="icon">📭</div>
+                            <div>Chưa có thông báo nào</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Weather Dashboard -->
+        <div class="dashboard">
+            <div class="weather-card">
+                <div class="icon">🌡️</div>
+                <div class="label">Nhiệt độ</div>
+                <div class="value" id="temperature">--°C</div>
+            </div>
+            <div class="weather-card">
+                <div class="icon">💧</div>
+                <div class="label">Độ ẩm</div>
+                <div class="value" id="humidity">--%</div>
+            </div>
+            <div class="weather-card">
+                <div class="icon">🌧️</div>
+                <div class="label">Mức mưa</div>
+                <div class="value" id="rain_level">0%</div>
+            </div>      
+            <div class="weather-card">
+                <div class="icon">🎐</div>
+                <div class="label">Tốc độ gió</div>
+                <div class="value" id="wind_speed">0 km/h</div>
+            </div>
+            <div class="weather-card">
+                <div class="icon">🔽</div>
+                <div class="label">Áp suất</div>
+                <div class="value" id="pressure">-- hPa</div>
+            </div>
+            <div class="weather-card status">
+                <div class="icon">☔</div>
+                <div class="label">Trạng thái</div>
+                <div class="value" id="rain_status">--</div>
+            </div>
+        </div>
+
+        <!-- Realtime Charts Section -->
+        <div class="charts-section">
+            <h3>📊 Biểu đồ thời gian thực</h3>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">🌡️ Nhiệt độ (°C)</div>
+                    <canvas id="tempChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">💧 Độ ẩm (%)</div>
+                    <canvas id="humidityChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">🌧️ Mức mưa (%)</div>
+                    <canvas id="rainChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">🎐 Tốc độ gió (km/h)</div>
+                    <canvas id="windChart"></canvas>
+                </div>
+                <div class="chart-card full-width">
+                    <div class="chart-title">🔽 Áp suất (hPa)</div>
+                    <canvas id="pressureChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>💬 Chat với AI Assistant</h2>
+                <button id="clearChat" class="btn-clear">🗑️ Xóa</button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="avatar">🤖</div>
+                    <div class="text">
+                        <strong>AI Assistant</strong>
+                        <p>Xin chào! Tôi là trợ lý AI của trạm thời tiết. Bạn có thể hỏi tôi về nhiệt độ, độ ẩm, tốc độ gió, hay bất kỳ thông tin thời tiết nào!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <button id="voiceBtn" class="btn-voice" title="Nhấn để nói">🎤</button>
+                <input type="text" id="chatInput" placeholder="Hỏi về thời tiết... (VD: Nhiệt độ bây giờ thế nào?)" />
+                <button id="sendBtn" class="btn-send">Gửi ➤</button>
+            </div>
+
+            <div class="status-bar">
+                <span id="statusText">Sẵn sàng</span>
+                <span id="voiceStatus" class="voice-status"></span>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel">
+            <h3>⚙️ Cài đặt</h3>
+            <div class="setting-item">
+                <label>
+                    <input type="checkbox" id="autoSpeak" checked />
+                    Tự động đọc câu trả lời
+                </label>
+            </div>
+            <div class="setting-item">
+                <label for="voiceSelect">Giọng đọc:</label>
+                <select id="voiceSelect">
+                    <option value="">Đang tải...</option>
+                </select>
+            </div>
+
+            <!-- Email Notification Settings -->
+            <div class="email-settings-section">
+                <h4>📧 Thông báo Email</h4>
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="emailEnabled" />
+                        Bật thông báo qua email
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>Email gửi (Gmail):</label>
+                    <input type="email" id="emailSender" placeholder="yourname@gmail.com" />
+                </div>
+                <div class="setting-item">
+                    <label>App Password:</label>
+                    <input type="password" id="emailPassword" placeholder="xxxx xxxx xxxx xxxx" />
+                    <small>Tạo tại: <a href="https://myaccount.google.com/apppasswords" target="_blank">myaccount.google.com/apppasswords</a></small>
+                </div>
+                <div class="setting-item">
+                    <label>Email nhận thông báo:</label>
+                    <input type="email" id="emailRecipient" placeholder="recipient@example.com" />
+                </div>
+                <div class="threshold-section">
+                    <h5>Ngưỡng cảnh báo:</h5>
+                    <div class="threshold-grid">
+                        <div class="threshold-item">
+                            <label>🔥 Nóng (°C):</label>
+                            <input type="number" id="alertTempHigh" value="30" />
+                        </div>
+                        <div class="threshold-item">
+                            <label>❄️ Lạnh (°C):</label>
+                            <input type="number" id="alertTempLow" value="20" />
+                        </div>
+                        <div class="threshold-item">
+                            <label>🌧️ Mưa (%):</label>
+                            <input type="number" id="alertRainLevel" value="50" />
+                        </div>
+                        <div class="threshold-item">
+                            <label>💨 Gió (km/h):</label>
+                            <input type="number" id="alertWindSpeed" value="30" />
+                        </div>
+                    </div>
+                </div>
+                <div class="email-buttons">
+                    <button id="saveEmailBtn" class="btn-save">💾 Lưu</button>
+                    <button id="testEmailBtn" class="btn-test">📨 Gửi thử</button>
+                </div>
+                <div class="email-status" id="emailStatus"></div>
+            </div>
+        </div>
+
+        <!-- OTA Update Panel -->
+        <div class="ota-panel">
+            <h3>🔄 Cập nhật Firmware</h3>
+            <div class="version-info">
+                <span>Phiên bản hiện tại: </span>
+                <strong id="currentVersion">v1.0</strong>
+            </div>
+            <div class="ota-form">
+                <input type="file" id="firmwareFile" accept=".bin" />
+                <button id="uploadBtn" class="btn-upload">📤 Upload Firmware</button>
+            </div>
+            <div class="ota-progress" id="otaProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="ota-status" id="otaStatus"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
